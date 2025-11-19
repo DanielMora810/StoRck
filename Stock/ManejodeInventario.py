@@ -2,13 +2,16 @@ class Product:
 
     lista_productos = []
 
-    def __init__(self, sku = None, name = None, cost = None, price = None, stock = None , cost_dozen = None):
+    def __init__(self, sku = None, name = None, cost = None, price = None, stock = None , cost_dozen = None, sold = None):
         self.sku = sku
         self.name = name
         self.cost = cost
         self.price = price
         self.stock = stock
         self.cost_dozen = cost_dozen
+        self.sold = sold
+
+
 
     def add_product(self):
         
@@ -17,6 +20,8 @@ class Product:
         self.cost = int(input("Ingresar costo de compra del producto: "))
         self.price = int(input("Ingresar el precio de venta al público: "))
         self.cost_dozen = int(input("Ingresar precio al público por docena: "))
+        self.sold = int(input("Ingrese cuántas unidades se han vendido: "))
+
 
         Product.lista_productos.append(self)
 
