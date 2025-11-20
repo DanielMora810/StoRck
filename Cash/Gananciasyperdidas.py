@@ -8,7 +8,9 @@ def registrar_ganancias():
         registros[dia] = {"ganancias": [], "perdidas": []}
 
     monto = float(input("Monto de la ganancia: "))
-    registros[dia]["ganancias"].append(monto)
+    resumen = input("Ingrese un resumen o descripción: ")
+
+    registros[dia]["ganancias"].append({"monto": monto, "resumen": resumen})
     print("Ganancia registrada.")
 
 
@@ -19,7 +21,9 @@ def registrar_perdidas():
         registros[dia] = {"ganancias": [], "perdidas": []}
 
     monto = float(input("Monto de la pérdida: "))
-    registros[dia]["perdidas"].append(monto)
+    resumen = input("Ingrese un resumen o descripción: ")
+
+    registros[dia]["perdidas"].append({"monto": monto, "resumen": resumen})
     print("Pérdida registrada.")
 
 
@@ -46,39 +50,27 @@ def mostrar_resumen():
         return
 
     datos = registros[dia]
-    total_g = sum(datos["ganancias"])
-    total_p = sum(datos["perdidas"])
 
-    print("\n--- RESUMEN ---")
+    total_g = sum(a["monto"] for a in datos["ganancias"])
+    total_p = sum(a["monto"] for a in datos["perdidas"])
+
+    print("\n--- RESUMEN DEL DÍA ---")
     print("Día:", dia)
-    if total_g > 0:
+    print("------------------------")
+
+    # Mostrar ganancias detalladas
+    if datos["ganancias"]:
+        print("\nGANANCIAS:")
+        for g in datos["ganancias"]:
+            print(f"- ${g['monto']}: {g['resumen']}")
         print("Total ganancias:", total_g)
-    if total_p > 0:
+
+    # Mostrar pérdidas detalladas
+    if datos["perdidas"]:
+        print("\nPÉRDIDAS:")
+        for p in datos["perdidas"]:
+            print(f"- ${p['monto']}: {p['resumen']}")
         print("Total pérdidas:", total_p)
-    print("Balance final:", total_g - total_p)
-    print("--------------")
 
- #menu
-def mostrar_menu():
-    print("\nMENU PRINCIPAL")
-    print("1. Registrar ganancias")
-    print("2. Registrar pérdidas")
-    print("3. Mostrar resumen de un día")
-    print("4. Salir")
-
-while True:
-    mostrar_menu()
-    opcion = input("Seleccione una opción: ")
-
-    if opcion == "1":
-        registrar_ganancias()
-    elif opcion == "2":
-        registrar_perdidas()
-    elif opcion == "3":
-        mostrar_resumen()
-    elif opcion == "4":
-        print("Saliendo del programa...")
-        break
-    else:
-        print("Opción inválida.")
-        
+    print("\nBALANCE FINAL:", total_g - total_p)
+    print("------------------------")
