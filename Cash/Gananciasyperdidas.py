@@ -1,21 +1,33 @@
+from datetime import datetime
+
 registros = {}   
 
 
 def registrar_ganancias():
-    dia = input("Ingrese el día: ")
+    # Fecha actual en dia-mes-año
+    dia = datetime.now().strftime("%d-%m-%Y")
 
+    #si no existe se crea
     if dia not in registros:
         registros[dia] = {"ganancias": [], "perdidas": []}
 
     monto = float(input("Monto de la ganancia: "))
     resumen = input("Ingrese un resumen o descripción: ")
 
-    registros[dia]["ganancias"].append({"monto": monto, "resumen": resumen})
-    print("Ganancia registrada.")
+    # hora exacta en que se hizo  el reporte
+    hora = datetime.now().strftime("%H:%M:%S")
+
+    registros[dia]["ganancias"].append({
+        "monto": monto,
+        "resumen": resumen,
+        "hora": hora
+    })
+
+    print(f"Ganancia registrada en la fecha {dia} a las {hora}.")
 
 
 def registrar_perdidas():
-    dia = input("Ingrese el día: ")
+    dia = datetime.now().strftime("%d-%m-%Y")
 
     if dia not in registros:
         registros[dia] = {"ganancias": [], "perdidas": []}
@@ -23,8 +35,15 @@ def registrar_perdidas():
     monto = float(input("Monto de la pérdida: "))
     resumen = input("Ingrese un resumen o descripción: ")
 
-    registros[dia]["perdidas"].append({"monto": monto, "resumen": resumen})
-    print("Pérdida registrada.")
+    hora = datetime.now().strftime("%H:%M:%S")
+
+    registros[dia]["perdidas"].append({
+        "monto": monto,
+        "resumen": resumen,
+        "hora": hora
+    })
+
+    print(f"Pérdida registrada en la fecha {dia} a las {hora}.")
 
 
 def seleccionar_dia():
@@ -50,7 +69,7 @@ def mostrar_resumen():
         return
 
     datos = registros[dia]
-
+    # Suma de ganancias y pérdidas
     total_g = sum(a["monto"] for a in datos["ganancias"])
     total_p = sum(a["monto"] for a in datos["perdidas"])
 
@@ -62,14 +81,14 @@ def mostrar_resumen():
     if datos["ganancias"]:
         print("\nGANANCIAS:")
         for g in datos["ganancias"]:
-            print(f"- ${g['monto']}: {g['resumen']}")
+            print(f"- ${g['monto']}: {g['resumen']} (Hora: {g['hora']})")
         print("Total ganancias:", total_g)
 
     # Mostrar pérdidas detalladas
     if datos["perdidas"]:
         print("\nPÉRDIDAS:")
         for p in datos["perdidas"]:
-            print(f"- ${p['monto']}: {p['resumen']}")
+            print(f"- ${p['monto']}: {p['resumen']} (Hora: {p['hora']})")
         print("Total pérdidas:", total_p)
 
     print("\nBALANCE FINAL:", total_g - total_p)
