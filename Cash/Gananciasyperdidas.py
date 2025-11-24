@@ -1,9 +1,32 @@
+import json
+import os
 from datetime import datetime
+
+AR = "registro.json"    
+
+# MODULO DE CASH
 
 registros = {}   
 
 
-def regisyto_gana():
+#APARTADO DE JSON
+
+def cargar_registros():
+    global registros
+    if os.path.exists(AR):
+        with open(AR, "r") as f:
+            registros = json.load(f)
+            print("Registros cargados.")
+    else:
+        print("No hay registros.")
+        registros = {}
+def guardar_registros():
+    with open(AR, "w") as f:
+        json.dump(registros, f)
+        print("Registros guardados.")
+
+
+def registro_gana():
     # Fecha actual en dia-mes-año
     dia = datetime.now().strftime("%d-%m-%Y")
 
@@ -23,6 +46,7 @@ def regisyto_gana():
         "hora": hora
     })
 
+    guardar_registros()
     print(f"Ganancia registrada en la fecha {dia} a las {hora}.")
 
 
@@ -42,7 +66,8 @@ def registro_pierde():
         "resumen": resumen,
         "hora": hora
     })
-
+    
+    guardar_registros()
     print(f"Pérdida registrada en la fecha {dia} a las {hora}.")
 
 
@@ -94,41 +119,6 @@ def mostrar_resumen():
     print("\nBALANCE FINAL:", total_g - total_p)
     print("------------------------")
 
-def mostrar_rangofecha():
-    if not registros:
-        print("No hay registros todavía.")
-        return
-    
-    fecha_inicio = input("Ingrese fecha de inicio (dd/mm/aaaa): ")
-    fecha_fin = input("Ingrese fecha final (dd/mm/aaaa): ")
-
-    try:
-        inicio = datetime.strptime(fecha_inicio, "%d-%m-%Y")
-        fin = datetime.strptime(fecha_fin, "%d-%m-%Y")
-    except ValueError:
-        print("Formato de fecha inválido.")
-        return
-
-    print("\n--- REGISTROS EN EL RANGO ---")
-    encontrados = False
-
-    for dia in registros:
-        fecha_dia = datetime.strptime(dia, "%d-%m-%Y")
-
-        if inicio <= fecha_dia <= fin:
-            encontrados = True
-            datos = registros[dia]
-
-            total_g = sum(a["monto"] for a in datos["ganancias"])
-            total_p = sum(a["monto"] for a in datos["perdidas"])
-
-            print(f"\nDía: {dia}")
-            print("Ganancias:", total_g)
-            print("Pérdidas:", total_p)
-            print("Balance:", total_g - total_p)
-
-    if not encontrados:
-        print("No se encontraron registros en este rango de fechas.")
         
 def filtro_rangofecha():
     if not registros:
@@ -165,4 +155,36 @@ def filtro_rangofecha():
 
     if not encontrados:
         print("No se encontraron registros en este rango de fechas.")
+        
+""""       
+def menu():
+    while True:
+        print("\n--- MENÚ PRINCIPAL ---")
+        print("1. Registrar ganancia")
+        print("2. Registrar pérdida")
+        print("3. Mostrar resumen por día")
+        print("4. Filtrar por rango de fechas")
+        print("5. Salir")
+
+        op = input("Seleccione una opción: ")
+
+        if op == "1":
+            registro_gana()
+        elif op == "2":
+            registro_pierde()
+        elif op == "3":
+            mostrar_resumen()
+        elif op == "4":
+            filtro_rangofecha()
+        elif op == "5":
+            print("Guardando datos antes de salir...")
+            guardar_registros()
+            print("Saliendo del programa...")
+            break
+        else:
+            print("Opción inválida, intente de nuevo.")
+
+cargar_registros()
+menu()
+"""
     
