@@ -1,47 +1,60 @@
 import json
 import os
 
-# --------------------- RUTA FIJA DEL ARCHIVO JSON --------------------- #
+# --------------------- RUTA DEL ARCHIVO JSON --------------------- #
 
-# Obtiene la ruta real del archivo loginlogout.py
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Hace que usuarios.json SIEMPRE esté en la misma carpeta que loginlogout.py
-RUTA_JSON = os.path.join(BASE_DIR, "usuarios.json")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))   # Carpeta Login
+RUTA_JSON = os.path.join(BASE_DIR, "usuarios.json")     # Archivo dentro de Login
 
 
 # --------------------- MANEJO DEL ARCHIVO JSON --------------------- #
 
 def cargar_usuarios():
-    """
-    Carga los usuarios desde usuarios.json.
-    Si no existe, crea el archivo dentro de la carpeta Login.
-    """
     if not os.path.exists(RUTA_JSON):
+        # Crear archivo vacío si no existe
         with open(RUTA_JSON, "w", encoding="utf-8") as archivo:
-            json.dump({}, archivo, indent=4)
+            json.dump({}, archivo, indent=4, ensure_ascii=False)
         return {}
 
+    # Leer archivo existente
     with open(RUTA_JSON, "r", encoding="utf-8") as archivo:
         return json.load(archivo)
 
 
 def guardar_usuarios():
-    """
-    Guarda el diccionario usuarios_registrados dentro de usuarios.json.
-    """
     with open(RUTA_JSON, "w", encoding="utf-8") as archivo:
-        json.dump(usuarios_registrados, archivo, indent=4)
+        json.dump(usuarios_registrados, archivo, indent=4, ensure_ascii=False)
 
 
-# Cargar usuarios al iniciar
 usuarios_registrados = cargar_usuarios()
-
-# Usuario actual en sesión
 usuario_actual = None
 
 
 # --------------------- FUNCIONES PRINCIPALES --------------------- #
+
+def registrar_usuario():
+    print("\n=== REGISTRAR NUEVO USUARIO ===")
+    username = input("Ingrese nuevo nombre de usuario: ")
+
+    if not username:
+        return "El nombre de usuario no puede estar vacío."
+
+    if username in usuarios_registrados:
+        return "Ese usuario ya existe."
+
+    password = input("Ingrese contraseña: ")
+    confirmar = input("Confirme la contraseña: ")
+
+    if not password:
+        return "La contraseña no puede estar vacía."
+
+    if password != confirmar:
+        return "Las contraseñas no coinciden."
+
+    usuarios_registrados[username] = password
+    guardar_usuarios()
+    return f"Usuario '{username}' registrado correctamente."
+
 
 def login(username, password):
     global usuario_actual
@@ -73,7 +86,7 @@ def logout():
 def estado_sesion():
     if usuario_actual:
         return f"Usuario conectado: {usuario_actual}"
-    return "No hay ningún usuario conectado."
+    return "No hay ninguna sesión activa."
 
 
 def cambiar_contraseña():
@@ -82,60 +95,21 @@ def cambiar_contraseña():
     if usuario_actual is None:
         return "Debes iniciar sesión para cambiar tu contraseña."
 
-    contraseña_actual = input("Ingresa tu contraseña actual: ").strip()
+    actual = input("Ingresa tu contraseña actual: ")
 
-    if usuarios_registrados[usuario_actual] != contraseña_actual:
+    if usuarios_registrados[usuario_actual] != actual:
         return "La contraseña actual no es correcta."
 
-    nueva = input("Nueva contraseña: ").strip()
-    confirmar = input("Confirma la nueva contraseña: ").strip()
+    nueva = input("Nueva contraseña: ")
+    confirmar = input("Confirma la nueva contraseña: ")
 
     if not nueva:
-        return "La nueva contraseña no puede estar vacía."
+        return "La contraseña no puede estar vacía."
 
     if nueva != confirmar:
         return "Las contraseñas no coinciden."
 
     usuarios_registrados[usuario_actual] = nueva
-    guardar_usuarios()  # Guardar cambios permanentemente
+    guardar_usuarios()
 
-    return "La contraseña fue cambiada y guardada correctamente."
-
-
-# --------------------- MENÚ INTERACTIVO --------------------- #
-
-def menu():
-    while True:
-        print("\n----- MENÚ PRINCIPAL -----")
-        print("1. Iniciar sesión")
-        print("2. Cerrar sesión")
-        print("3. Ver estado de sesión")
-        print("4. Cambiar contraseña")
-        print("5. Salir")
-
-        opcion = input("Selecciona una opción: ").strip()
-
-        if opcion == "1":
-            username = input("Usuario: ").strip()
-            password = input("Contraseña: ").strip()
-            print(login(username, password))
-
-        elif opcion == "2":
-            print(logout())
-
-        elif opcion == "3":
-            print(estado_sesion())
-
-        elif opcion == "4":
-            print(cambiar_contraseña())
-
-        elif opcion == "5":
-            print("Saliendo del sistema.")
-            break
-
-        else:
-            print("Opción inválida. Intenta nuevamente.")
-
-
-# Ejecutar menú
-menu()
+    return "La contraseña fue cambiada correctamente."

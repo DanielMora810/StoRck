@@ -1,4 +1,10 @@
-from Login.loginylogout import login, logout, estado_sesion, cambiar_contraseña
+from Login.loginylogout import (
+    login,
+    logout,
+    estado_sesion,
+    cambiar_contraseña,
+    registrar_usuario
+)
 
 def menu_principal():
     while True:
@@ -7,7 +13,8 @@ def menu_principal():
         print("2. Cerrar sesión")
         print("3. Estado de sesión")
         print("4. Cambiar contraseña")
-        print("5. Salir")
+        print("5. Registrar nuevo usuario")
+        print("6. Salir")
 
         opcion = input("Seleccione una opción: ")
 
@@ -26,11 +33,15 @@ def menu_principal():
             print(cambiar_contraseña())
 
         elif opcion == "5":
-            print("Saliendo del sistema.")
+            print(registrar_usuario())
+
+        elif opcion == "6":
+            print("Saliendo del sistema...")
             break
 
         else:
             print("Opción inválida, intente de nuevo.")
 
-# Iniciar programa
+
+# Ejecutar menú
 menu_principal()
