@@ -26,6 +26,8 @@ def guardar_registros():
         print("Registros guardados.")
 
 
+
+
 def registro_gana():
     # Fecha actual en dia-mes-año
     dia = datetime.now().strftime("%d-%m-%Y")

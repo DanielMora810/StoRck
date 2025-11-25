@@ -40,7 +40,7 @@ def menu_principal():
 
         opcion = input("Seleccione una opción: ")
 
-        # ------ LOGIN ------
+        # ------ LOGIN ------ 1STCOOPTD
         if opcion == "1":
             usuario = input("Usuario: ")
             contraseña = input("Contraseña: ")
